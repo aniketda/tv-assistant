@@ -3,6 +3,7 @@ name: Build APK
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -16,14 +17,19 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Make gradlew executable
-        run: chmod +x gradlew
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
 
-      - name: Build APK
-        run: ./gradlew assembleDebug
+      - name: Make gradlew executable
+        run: |
+          gradle wrapper --gradle-version 8.0
+          chmod +x gradlew
+
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
-          name: tv-assistant-apk
+          name: TVAssistant-APK
           path: app/build/outputs/apk/debug/app-debug.apk
