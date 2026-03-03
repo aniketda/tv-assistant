@@ -20,13 +20,15 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Make gradlew executable
+      - name: Create gradlew
         run: |
-          gradle wrapper --gradle-version 8.0
+          gradle wrapper --gradle-version 8.0 --distribution-type bin
           chmod +x gradlew
+        env:
+          GRADLE_USER_HOME: /root/.gradle
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace
+        run: ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
